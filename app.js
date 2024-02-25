@@ -16,6 +16,8 @@ app.use(express.urlencoded({ extended: true }));
 //routes
 const subscriberRouter = require("./routes/subscriber");
 const publisherRouter = require("./routes/publisher");
+const raspberrypi = require("./controllers/raspberrypi");
+const counter = require("./controllers/counter");
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
