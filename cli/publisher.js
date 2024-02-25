@@ -3,7 +3,7 @@ const mqtt = require("mqtt");
 var mqttClient;
 
 // Change this to point to your MQTT broker or DNS name
-const mqttHost = "192.168.100.22";
+const mqttHost = "192.168.101.170";
 const protocol = "mqtt";
 const port = "1883";
 
