@@ -12,7 +12,7 @@ function connectToBroker() {
     const clientId = "client" + Math.random().toString(36).substring(7);
   
     // Change this to point to your MQTT broker
-    const host = "ws://192.168.101.170:9001/mqtt";
+    const host = "wss://192.168.101.189:9001/mqtt";
   
     const options = {
       keepalive: 60,
@@ -32,7 +32,7 @@ function connectToBroker() {
     });
   
     mqttClient.on("reconnect", () => {
-      console.log("Reconnecting...");
+      console.log("Reconnecting raspberry...");
     });
   
     mqttClient.on("connect", () => {
