@@ -24,7 +24,7 @@ connectToBroker = () => {
         const jsonMessage = {
             status: 'connected',
             id: 'pi00001',
-            name: 'Rasperry Pi counter',
+            name: 'Zählwerk 1',
             type: 'proximity',
             usecase: 'counter',
             counterValue,
