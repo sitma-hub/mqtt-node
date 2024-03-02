@@ -1,5 +1,5 @@
 const mqtt = require("mqtt");
-const Gpio = require('onoff').Gpio; //include onoff to interact with the GPIO
+const Gpio = require('onoff').Gpio; 
 
 const curPin = 26;
 const LED = new Gpio(curPin, 'out'); 
@@ -11,7 +11,6 @@ function setLED(value) {
 function connectToBroker() {
     const clientId = "client" + Math.random().toString(36).substring(7);
   
-    // Change this to point to your MQTT broker
     const host = "wss://192.168.101.189:9001/mqtt";
   
     const options = {
