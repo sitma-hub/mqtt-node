@@ -3,7 +3,7 @@ const Gpio = require('onoff').Gpio; //include onoff to interact with the GPIO
 
 
 let mqttClient = null;
-function connectToBroker() {
+connectToBroker = () => {
     const clientId = "client" + Math.random().toString(36).substring(7);
   
     // Change this to point to your MQTT broker
@@ -33,9 +33,30 @@ function connectToBroker() {
     mqttClient.on("connect", () => {
       console.log("Client connected:" + clientId);
     });
+
+    mqttClient.on("message", (topic, message, packet) => {
+      console.log(
+        "Received Message: " + message.toString() + "\nOn topic: " + topic
+      );
+      if (message.toString() === 'INCREMENT') {
+        counterValue++;
+        mqttClient.publish('sensors/' + iotID + '/counter', String(counterValue), {});
+      } else if (message.toString() === 'DECREMENT') {
+        counterValue--;
+        mqttClient.publish('sensors/' + iotID + '/counter', String(counterValue), {});
+      } else if (message.toString() === 'RESET') {
+        counterValue = 0;
+        mqttClient.publish('sensors/' + iotID + '/counter', String(counterValue), {});
+      }
+      console.log('countervalue', counterValue);
+
+
+    });
+
+    mqttClient.subscribe('cmd/sensors/' + iotID + '/#', { qos: 0 });
   
 }
-  
+
 connectToBroker()
 
 const curPin = 17;
@@ -45,7 +66,7 @@ var pushButton = new Gpio(curPin, 'in', 'rising');
 pushButton.watch(function () { //Watch for hardware interrupts on pushButton GPIO, specify callback function
   if (mqttClient) {
     counterValue++;
-    mqttClient.publish('sensors/pi00001/counter', String(counterValue), {});
+    mqttClient.publish('sensors/' + iotID + '/counter', String(counterValue), {});
   }
 });
 

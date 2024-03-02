@@ -23,14 +23,14 @@ connectToBroker = () => {
     mqttClient.on("message", () => {
         const jsonMessage = {
             status: 'connected',
-            id: 'pi00001',
-            name: 'Zählwerk 1',
-            type: 'proximity',
-            usecase: 'counter',
+            id: iotID,
+            name: iotName,
+            type: iotType,
+            usecase: iotUsecase,
             counterValue,
             timestamp: new Date().toISOString()
         };
-        mqttClient.publish('sensors/pi00001/status', JSON.stringify(jsonMessage), {});
+        mqttClient.publish('sensors/' + iotID + '/status', JSON.stringify(jsonMessage), {});
     });
     
     mqttClient.subscribe('cmd/sensors/status', { qos: 0 });

@@ -2,6 +2,12 @@ const express = require("express");
 const app = express();
 const port = 3000;
 
+counterValue = 0;
+iotID = 'pi00001';
+iotName = 'Zählwerk 1';
+iotType = 'proximity';
+iotUsecase = 'counter';
+
 // Serve Static Files
 app.use(express.static("public"));
 app.use("/assets", express.static("public"));
@@ -27,8 +33,6 @@ app.get("/", (req, res) => {
 
 app.use("/subscriber", subscriberRouter);
 app.use("/publisher", publisherRouter);
-
-counterValue = 0;
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
