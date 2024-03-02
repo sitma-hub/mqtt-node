@@ -35,9 +35,9 @@ connectToBroker = () => {
     });
 
     mqttClient.on("message", (topic, message, packet) => {
-      console.log(
-        "Received Message: " + message.toString() + "\nOn topic: " + topic
-      );
+      // console.log(
+      //   "Received Message: " + message.toString() + "\nOn topic: " + topic
+      // );
       if (message.toString() === 'INCREMENT') {
         counterValue++;
         mqttClient.publish('sensors/' + iotID + '/counter', String(counterValue), {});
@@ -48,9 +48,6 @@ connectToBroker = () => {
         counterValue = 0;
         mqttClient.publish('sensors/' + iotID + '/counter', String(counterValue), {});
       }
-      console.log('countervalue', counterValue);
-
-
     });
 
     mqttClient.subscribe('cmd/sensors/' + iotID + '/#', { qos: 0 });
