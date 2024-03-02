@@ -19,13 +19,16 @@ const publisherRouter = require("./routes/publisher");
 const raspberrypi = require("./controllers/raspberrypi");
 const stepper = require("./controllers/stepper");
 const counter = require("./controllers/counter");
+const status = require("./controllers/status");
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Rasperry pi 4 - First IoT device of MÜNCH");
 });
 
 app.use("/subscriber", subscriberRouter);
 app.use("/publisher", publisherRouter);
+
+counterValue = 0;
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

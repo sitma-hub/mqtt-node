@@ -43,9 +43,10 @@ var pushButton = new Gpio(curPin, 'in', 'rising');
 
 
 pushButton.watch(function () { //Watch for hardware interrupts on pushButton GPIO, specify callback function
-    if (mqttClient) {
-        mqttClient.publish('a', 'button pushed', {});
-    }
+  if (mqttClient) {
+    counterValue++;
+    mqttClient.publish('sensors/pi00001/counter', String(counterValue), {});
+  }
 });
 
 
