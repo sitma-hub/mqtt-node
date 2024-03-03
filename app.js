@@ -1,6 +1,6 @@
 const express = require("express");
-const app = express();
-const port = 3001;
+app = express();
+port = 3001;
 
 counterValue = 0;
 iotID = 'pi00001';
@@ -36,6 +36,4 @@ app.get("/", (req, res) => {
 // app.use("/subscriber", subscriberRouter);
 // app.use("/publisher", publisherRouter);
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
+
