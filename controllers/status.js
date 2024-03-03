@@ -21,10 +21,7 @@ connectToBroker = () => {
       mqttClient.end();
     });
     mqttClient.on("message", (topic, message) => {
-      console.log('Received Message: ' + message.toString() + '\nOn topic: ' + topic);
-      if (disconnectTimeout) {
-        clearTimeout(disconnectTimeout);
-      }
+      // console.log('Received Message status: ' + message.toString() + '\nOn topic: ' + topic);
       const topicParts = topic.split('/');
       messageJson = JSON.parse(message.toString());
       let status = 'undefined'

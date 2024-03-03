@@ -49,20 +49,23 @@ connectToBroker = () => {
         if (messageJson.cmd === 'INCREMENT') {
           counterValue++;
           mqttClient.publish('sensors/' + iotID + '/counter', String(counterValue), {});
-          console.log('Counter INCREMENT: ' + counterValue);
+          // console.log('Counter INCREMENT: ' + counterValue);
         } else if (messageJson.cmd === 'DECREMENT') {
-          counterValue--;
+          if (counterValue > 0) {
+            counterValue--;
+          }
           mqttClient.publish('sensors/' + iotID + '/counter', String(counterValue), {});
-          console.log('Counter DECREMENT: ' + counterValue);
+          // console.log('Counter DECREMENT: ' + counterValue);
         } else if (messageJson.cmd === 'RESET') {
           counterValue = 0;
           mqttClient.publish('sensors/' + iotID + '/counter', String(counterValue), {});
-          console.log('Counter RESET: ' + counterValue);
+          // console.log('Counter RESET: ' + counterValue);
         }
-        disconnectTimeout = setTimeout(() => {
-          iotClientConnected = null;
-        }, 1000);
+        // console.log('successfully connected', counterValue);
       }
+      disconnectTimeout = setTimeout(() => {
+        iotClientConnected = null;
+      }, 1000);
     });
 
     mqttClient.subscribe('cmd/sensors/' + iotID + '/#', { qos: 0 });
@@ -78,7 +81,7 @@ var pushButton = new Gpio(curPin, 'in', 'rising');
 pushButton.watch(function () { 
   if (mqttClient) {
     counterValue++;
-    console.log('Counter value111: ' + counterValue);
+    // console.log('Counter value111: ' + counterValue);
     mqttClient.publish('sensors/' + iotID + '/counter', String(counterValue), {});
   }
 });
