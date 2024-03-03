@@ -7,6 +7,8 @@ iotID = 'pi00001';
 iotName = 'Zählwerk 1';
 iotType = 'proximity';
 iotUsecase = 'counter';
+iotClientConnected = null;
+disconnectTimeout = null;
 
 // Serve Static Files
 // app.use(express.static("public"));

@@ -38,15 +38,30 @@ connectToBroker = () => {
       // console.log(
       //   "Received Message: " + message.toString() + "\nOn topic: " + topic
       // );
-      if (message.toString() === 'INCREMENT') {
-        counterValue++;
-        mqttClient.publish('sensors/' + iotID + '/counter', String(counterValue), {});
-      } else if (message.toString() === 'DECREMENT') {
-        counterValue--;
-        mqttClient.publish('sensors/' + iotID + '/counter', String(counterValue), {});
-      } else if (message.toString() === 'RESET') {
-        counterValue = 0;
-        mqttClient.publish('sensors/' + iotID + '/counter', String(counterValue), {});
+      const messageJson = JSON.parse(message.toString());
+      if (disconnectTimeout) {
+        clearTimeout(disconnectTimeout);
+      }
+      if (messageJson.clientId === iotClientConnected || !iotClientConnected) {
+        if (!iotClientConnected) {
+          iotClientConnected = messageJson.clientId;
+        }
+        if (messageJson.cmd === 'INCREMENT') {
+          counterValue++;
+          mqttClient.publish('sensors/' + iotID + '/counter', String(counterValue), {});
+          console.log('Counter INCREMENT: ' + counterValue);
+        } else if (messageJson.cmd === 'DECREMENT') {
+          counterValue--;
+          mqttClient.publish('sensors/' + iotID + '/counter', String(counterValue), {});
+          console.log('Counter DECREMENT: ' + counterValue);
+        } else if (messageJson.cmd === 'RESET') {
+          counterValue = 0;
+          mqttClient.publish('sensors/' + iotID + '/counter', String(counterValue), {});
+          console.log('Counter RESET: ' + counterValue);
+        }
+        disconnectTimeout = setTimeout(() => {
+          iotClientConnected = null;
+        }, 1000);
       }
     });
 
@@ -60,9 +75,10 @@ const curPin = 17;
 var pushButton = new Gpio(curPin, 'in', 'rising');
 
 
-pushButton.watch(function () { //Watch for hardware interrupts on pushButton GPIO, specify callback function
+pushButton.watch(function () { 
   if (mqttClient) {
     counterValue++;
+    console.log('Counter value111: ' + counterValue);
     mqttClient.publish('sensors/' + iotID + '/counter', String(counterValue), {});
   }
 });
