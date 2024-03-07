@@ -75,7 +75,7 @@ connectToBroker = () => {
 connectToBroker()
 
 const curPin = 17;
-var pushButton = new Gpio(curPin, 'in', 'rising');
+var pushButton = new Gpio(curPin, 'in', 'rising', {debounceTimeout: 10});
 
 
 pushButton.watch(function () { 
