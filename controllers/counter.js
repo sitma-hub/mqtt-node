@@ -74,15 +74,26 @@ connectToBroker = () => {
 
 connectToBroker()
 
-const curPin = 17;
-var pushButton = new Gpio(curPin, 'in', 'rising', {debounceTimeout: 500});
+const counterPin = 17;
+const valvePin = 26;
+
+var pushButton = new Gpio(counterPin, 'in', 'rising', {debounceTimeout: 800});
+var valveOutput = new Gpio(valvePin, 'out');
+valveOutput.writeSync(0);
 
 
 pushButton.watch(function () { 
   if (mqttClient) {
     counterValue++;
-    // console.log('Counter value111: ' + counterValue);
+    console.log('Counter value increment: ' + counterValue);
     mqttClient.publish('sensors/' + iotID + '/counter', String(counterValue), {});
+    if (counterValue === 5) {
+      console.log('Counter limit reached: ' + counterValue);
+      valveOutput.writeSync(1);
+      setTimeout(() => {
+        valveOutput.writeSync(0);
+      }, 100);
+    }
   }
 });
 
