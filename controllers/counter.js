@@ -60,6 +60,10 @@ connectToBroker = () => {
           counterValue = 0;
           mqttClient.publish('sensors/' + iotID + '/counter', String(counterValue), {});
           // console.log('Counter RESET: ' + counterValue);
+        } else if (messageJson.cmd === 'SET_MAX_VALUE') {
+          maxValue = messageJson.maxValue;
+          mqttClient.publish('sensors/' + iotID + '/counter-max-value', String(maxValue), {});
+          // console.log('Counter SET_MAX_VALUE: ' + maxValue);
         }
         // console.log('successfully connected', counterValue);
       }
@@ -77,7 +81,7 @@ connectToBroker()
 const counterPin = 17;
 const valvePin = 26;
 
-var pushButton = new Gpio(counterPin, 'in', 'rising', {debounceTimeout: 800});
+var pushButton = new Gpio(counterPin, 'in', 'rising', {debounceTimeout: 80});
 var valveOutput = new Gpio(valvePin, 'out');
 valveOutput.writeSync(0);
 
