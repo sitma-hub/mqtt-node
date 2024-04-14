@@ -71,17 +71,16 @@ connectToBroker = () => {
           mqttClient.publish('sensors/' + iotID + '/counter', String(counterValue), {});
           checkIfCounterEqualsMaxValue()
           // console.log('Counter RESET: ' + counterValue);
-        } else if (messageJson.cmd === 'SET_MAX_VALUE') {
-          maxValue = messageJson.maxValue;
-          mqttClient.publish('sensors/' + iotID + '/counter-max-value', String(maxValue), {});
-          checkIfCounterEqualsMaxValue()
-          // console.log('Counter SET_MAX_VALUE: ' + maxValue);
+        // } else if (messageJson.cmd === 'SET_MAX_VALUE') {
+        //   maxValue = messageJson.maxValue;
+        //   mqttClient.publish('sensors/' + iotID + '/counter-max-value', String(maxValue), {});
+        //   checkIfCounterEqualsMaxValue()
+        //   // console.log('Counter SET_MAX_VALUE: ' + maxValue);
         } else if (
           messageJson.cmd === 'SET_TARGET_VALUE'
         ) {
           maxValue = Number(messageJson.value)
-          valveOutput.writeSync(1);
-          // console.log('Counter SET_TARGET_VALUE: ' + maxValue);
+          // console.log('Counter SET_TARGET_VALUE: ' + maxValue, messageJson);
           checkIfCounterEqualsMaxValue()
         }
         // console.log('successfully connected', counterValue);
