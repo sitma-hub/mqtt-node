@@ -1,6 +1,14 @@
 const mqtt = require("mqtt");
 const Gpio = require('onoff').Gpio; //include onoff to interact with the GPIO
 
+function checkIfCounterEqualsMaxValue() {
+  // console.log('Counter value: ' + counterValue + ' Max value: ' + maxValue);
+  if (counterValue >= maxValue) {
+    valveOutput.writeSync(0);
+  } else {
+    valveOutput.writeSync(1);
+  }
+}
 
 let mqttClient = null;
 connectToBroker = () => {
@@ -49,21 +57,32 @@ connectToBroker = () => {
         if (messageJson.cmd === 'INCREMENT') {
           counterValue++;
           mqttClient.publish('sensors/' + iotID + '/counter', String(counterValue), {});
+          checkIfCounterEqualsMaxValue()
           // console.log('Counter INCREMENT: ' + counterValue);
         } else if (messageJson.cmd === 'DECREMENT') {
           if (counterValue > 0) {
             counterValue--;
           }
           mqttClient.publish('sensors/' + iotID + '/counter', String(counterValue), {});
+          checkIfCounterEqualsMaxValue()
           // console.log('Counter DECREMENT: ' + counterValue);
         } else if (messageJson.cmd === 'RESET') {
           counterValue = 0;
           mqttClient.publish('sensors/' + iotID + '/counter', String(counterValue), {});
+          checkIfCounterEqualsMaxValue()
           // console.log('Counter RESET: ' + counterValue);
         } else if (messageJson.cmd === 'SET_MAX_VALUE') {
           maxValue = messageJson.maxValue;
           mqttClient.publish('sensors/' + iotID + '/counter-max-value', String(maxValue), {});
+          checkIfCounterEqualsMaxValue()
           // console.log('Counter SET_MAX_VALUE: ' + maxValue);
+        } else if (
+          messageJson.cmd === 'SET_TARGET_VALUE'
+        ) {
+          maxValue = Number(messageJson.value)
+          valveOutput.writeSync(1);
+          // console.log('Counter SET_TARGET_VALUE: ' + maxValue);
+          checkIfCounterEqualsMaxValue()
         }
         // console.log('successfully connected', counterValue);
       }
@@ -83,7 +102,7 @@ const valvePin = 26;
 
 var pushButton = new Gpio(counterPin, 'in', 'rising', {debounceTimeout: 80});
 var valveOutput = new Gpio(valvePin, 'out');
-valveOutput.writeSync(0);
+valveOutput.writeSync(1);
 
 
 pushButton.watch(function () { 
@@ -91,13 +110,7 @@ pushButton.watch(function () {
     counterValue++;
     console.log('Counter value increment: ' + counterValue);
     mqttClient.publish('sensors/' + iotID + '/counter', String(counterValue), {});
-    if (counterValue === 5) {
-      console.log('Counter limit reached: ' + counterValue);
-      valveOutput.writeSync(1);
-      setTimeout(() => {
-        valveOutput.writeSync(0);
-      }, 100);
-    }
+    checkIfCounterEqualsMaxValue()
   }
 });
 

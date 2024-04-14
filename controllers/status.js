@@ -46,8 +46,28 @@ connectToBroker = () => {
         status = 'already connected';
         // TODO: publish warning message
       }
+      const messageJson2 = {
+        cmd: 'SET_TARGET_VALUE',
+        clientId: messageJson.clientId,
+        value: maxValue,
+      };
+      mqttClient.publish(
+        'cmd/sensors/' + iotID + '/counter',
+        JSON.stringify(messageJson2),
+        { qos: 0 }
+      );
     } else if (topicParts[0] === 'cmd' && topicParts[2] === 'status') {
       mqttClient.publish('sensors/' + iotID + '/status', JSON.stringify(jsonMessage), {});
+      const messageJson2 = {
+        cmd: 'SET_TARGET_VALUE',
+        clientId: messageJson.clientId,
+        value: maxValue,
+      };
+      mqttClient.publish(
+        'cmd/sensors/' + iotID + '/counter',
+        JSON.stringify(messageJson2),
+        { qos: 0 }
+      );
     }
   });
 
