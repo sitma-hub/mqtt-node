@@ -36,7 +36,9 @@ connectToBroker = () => {
       timestamp: new Date().toISOString()
     };
     if (topicParts[0] === 'cmd' && topicParts[3] === 'connect') {
+      // console.log('connect');
       if (!iotClientConnected) {
+
         iotClientConnected = messageJson.clientId;
         status = 'connected';
         disconnectTimeout = setTimeout(() => {
@@ -44,19 +46,21 @@ connectToBroker = () => {
         }, 1000);
       } else {
         status = 'already connected';
-        // TODO: publish warning message
       }
-      const messageJson2 = {
-        cmd: 'SET_TARGET_VALUE',
-        clientId: messageJson.clientId,
-        value: maxValue,
-      };
-      mqttClient.publish(
-        'cmd/sensors/' + iotID + '/counter',
-        JSON.stringify(messageJson2),
-        { qos: 0 }
-      );
+      setTimeout(() => {
+        const messageJson2 = {
+          cmd: 'SET_TARGET_VALUE',
+          clientId: messageJson.clientId,
+          value: maxValue,
+        };
+        mqttClient.publish(
+          'cmd/sensors/' + iotID + '/counter',
+          JSON.stringify(messageJson2),
+          { qos: 0 }
+        );
+      }, 500);
     } else if (topicParts[0] === 'cmd' && topicParts[2] === 'status') {
+      // console.log('status');
       mqttClient.publish('sensors/' + iotID + '/status', JSON.stringify(jsonMessage), {});
       const messageJson2 = {
         cmd: 'SET_TARGET_VALUE',

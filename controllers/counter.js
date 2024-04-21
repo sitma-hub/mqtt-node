@@ -10,6 +10,7 @@ function checkIfCounterEqualsMaxValue() {
   }
 }
 
+
 let mqttClient = null;
 connectToBroker = () => {
     const clientId = "client" + Math.random().toString(36).substring(7);
@@ -107,7 +108,7 @@ valveOutput.writeSync(1);
 pushButton.watch(function () { 
   if (mqttClient) {
     counterValue++;
-    console.log('Counter value increment: ' + counterValue);
+    // console.log('Counter value increment: ' + counterValue);
     mqttClient.publish('sensors/' + iotID + '/counter', String(counterValue), {});
     checkIfCounterEqualsMaxValue()
   }
