@@ -100,7 +100,7 @@ connectToBroker()
 const counterPin = 17;
 const valvePin = 26;
 
-var pushButton = new Gpio(counterPin, 'in', 'rising', {debounceTimeout: 80});
+var pushButton = new Gpio(counterPin, 'in', 'rising', {debounceTimeout: 100});
 var valveOutput = new Gpio(valvePin, 'out');
 valveOutput.writeSync(1);
 
