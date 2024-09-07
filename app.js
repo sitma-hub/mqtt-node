@@ -3,7 +3,9 @@ app = express();
 port = 3001;
 
 counterValue = 0;
-maxValue = 115;
+totalCounter = 0;
+countNextTotal = true;
+maxValue = 3;
 iotID = 'pi00001';
 iotName = 'Zählwerk 1';
 iotType = 'proximity';

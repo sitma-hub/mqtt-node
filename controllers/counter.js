@@ -5,9 +5,16 @@ function checkIfCounterEqualsMaxValue() {
   // console.log('Counter value: ' + counterValue + ' Max value: ' + maxValue);
   if (counterValue >= maxValue) {
     valveOutput.writeSync(0);
+    
+    if (countNextTotal) {
+      totalCounter++;
+      console.log('Valve opened', totalCounter,countNextTotal);
+      countNextTotal = false;
+    }
   } else {
     valveOutput.writeSync(1);
   }
+  mqttClient.publish('sensors/' + iotID + '/total', String(totalCounter), {});
 }
 
 
@@ -44,9 +51,9 @@ connectToBroker = () => {
     });
 
     mqttClient.on("message", (topic, message, packet) => {
-      // console.log(
-      //   "Received Message: " + message.toString() + "\nOn topic: " + topic
-      // );
+      console.log(
+        "Received Message: " + message.toString() + "\nOn topic: " + topic
+      );
       const messageJson = JSON.parse(message.toString());
       if (disconnectTimeout) {
         clearTimeout(disconnectTimeout);
@@ -83,8 +90,16 @@ connectToBroker = () => {
           maxValue = Number(messageJson.value)
           // console.log('Counter SET_TARGET_VALUE: ' + maxValue, messageJson);
           checkIfCounterEqualsMaxValue()
+        } else if (messageJson.cmd === 'RESET_TOTAL') {
+          totalCounter = 0;
+          mqttClient.publish('sensors/' + iotID + '/total', String(totalCounter), {});
+          countNextTotal = true;
+          // console.log('Total RESET: ' + totalCounter);
         }
         // console.log('successfully connected', counterValue);
+      }
+      if (counterValue === 0) {
+        countNextTotal = true;
       }
       disconnectTimeout = setTimeout(() => {
         iotClientConnected = null;
