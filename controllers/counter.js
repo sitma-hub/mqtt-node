@@ -51,9 +51,9 @@ connectToBroker = () => {
     });
 
     mqttClient.on("message", (topic, message, packet) => {
-      console.log(
-        "Received Message: " + message.toString() + "\nOn topic: " + topic
-      );
+      // console.log(
+      //   "Received Message: " + message.toString() + "\nOn topic: " + topic
+      // );
       const messageJson = JSON.parse(message.toString());
       if (disconnectTimeout) {
         clearTimeout(disconnectTimeout);
@@ -95,6 +95,18 @@ connectToBroker = () => {
           mqttClient.publish('sensors/' + iotID + '/total', String(totalCounter), {});
           countNextTotal = true;
           // console.log('Total RESET: ' + totalCounter);
+        } else if (messageJson.cmd === 'INCREMENT_TOTAL') {
+          totalCounter++;
+          mqttClient.publish('sensors/' + iotID + '/total', String(totalCounter), {});
+          countNextTotal = false;
+          // console.log('Total INCREMENT: ' + totalCounter);
+        } else if (messageJson.cmd === 'DECREMENT_TOTAL') {
+          if (totalCounter > 0) {
+            totalCounter--;
+          }
+          mqttClient.publish('sensors/' + iotID + '/total', String(totalCounter), {});
+          countNextTotal = false;
+          // console.log('Total DECREMENT: ' + totalCounter);
         }
         // console.log('successfully connected', counterValue);
       }
